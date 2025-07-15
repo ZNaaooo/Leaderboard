@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard Beyblade Burst S1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libertinus+Mono&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Libertinus Mono', monospace;
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+      margin: 0;
+      padding: 20px;
+      color: #ffffff;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #f1c40f;
+      font-size: 40px;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+    .controls {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .controls button {
+      padding: 10px 16px;
+      margin: 0 5px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background: linear-gradient(to right, #2980b9, #2c3e50);
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Libertinus Mono', monospace;
+    }
+    .controls button:hover {
+      background: linear-gradient(to right, #3498db, #34495e);
+    }
+    table {
+      width: 100%;
+      max-width: 100%;
+      margin: auto;
+      border-collapse: collapse;
+      background: #121212;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      font-size: 16px;
+      color: #f8f8f8;
+    }
+    th {
+      background: #2f3640;
+      color: #f1c40f;
+    }
+    tr:nth-child(even) { background: #1e1e1e; }
+    tr.gold { background: #bfa019; font-weight: bold; color: #000; }
+    tr.silver { background: #7f8c8d; font-weight: bold; color: #000; }
+    tr.bronze { background: #cd7f32; font-weight: bold; color: #000; }
+    img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    .modal {
+      position: fixed;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: #1f1f1f;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.1);
+      display: none;
+      max-width: 90%;
+      width: 400px;
+      z-index: 10;
+    }
+    .modal label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #ffffff;
+    }
+    .modal input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #666;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #2c2c2c;
+      color: #f1f1f1;
+    }
+    .modal button {
+      margin-top: 15px;
+      padding: 8px 12px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      background-color: #27ae60;
+      color: white;
+      cursor: pointer;
+      font-family: 'Libertinus Mono', monospace;
+    }
+    .modal button:last-child {
+      background-color: #e74c3c;
+      margin-left: 10px;
+    }
+    @media (max-width: 768px) {
+      th, td {
+        padding: 8px;
+        font-size: 13px;
+      }
+      img {
+        width: 60px;
+        height: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🏆 Leaderboard Beyblade Burst S1</h1>
+  <div class="controls">
+    <button onclick="openAddModal()">Tambah Beyblade</button>
+    <button onclick="resetData()">Reset</button>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Peringkat</th>
+        <th>Model</th>
+        <th>Nama</th>
+        <th>Menang</th>
+        <th>Kalah</th>
+        <th>🥇</th>
+        <th>🥈</th>
+        <th>🥉</th>
+        <th>Edit</th>
+        <th>Hapus</th>
+      </tr>
+    </thead>
+    <tbody id="leaderboard"></tbody>
+  </table>
+  <div class="modal" id="addModal">
+    <h3>Tambah Beyblade</h3>
+    <label>Nama: <input type="text" id="newName"></label>
+    <label>Gambar: <input type="file" id="newImg"></label>
+    <label>Menang: <input type="number" id="newWin" value="0"></label>
+    <label>Kalah: <input type="number" id="newLose" value="0"></label>
+    <label>🥇: <input type="number" id="newGold" value="0"></label>
+    <label>🥈: <input type="number" id="newSilver" value="0"></label>
+    <label>🥉: <input type="number" id="newBronze" value="0"></label>
+    <button onclick="saveNew()">Tambah</button>
+    <button onclick="closeAddModal()">Batal</button>
+  </div>
+
+  <div class="modal" id="editModal">
+    <h3>Edit Beyblade</h3>
+    <label>Nama: <input type="text" id="editName"></label>
+    <label>Gambar: <input type="file" id="editImg"></label>
+    <label>Menang: <input type="number" id="editWin"></label>
+    <label>Kalah: <input type="number" id="editLose"></label>
+    <label>🥇: <input type="number" id="editGold"></label>
+    <label>🥈: <input type="number" id="editSilver"></label>
+    <label>🥉: <input type="number" id="editBronze"></label>
+    <button onclick="saveEdit()">Simpan</button>
+    <button onclick="closeEditModal()">Batal</button>
+  </div>
+
+  <script>
+    const defaultData = [
+      { name: "Raid Longinus", win: 0, lose: 0, gold: 0, silver: 0, bronze: 0, img: "" },
+      { name: "Zwei Longinus", win: 0, lose: 0, gold: 0, silver: 0, bronze: 0, img: "" },
+      { name: "Hazard Kerbeus", win: 0, lose: 0, gold: 0, silver: 0, bronze: 0, img: "" },
+    ];
+    let data = JSON.parse(localStorage.getItem("beybladeData")) || defaultData;
+    let editingIndex = null;
+
+    function toBase64(file, callback) {
+      const reader = new FileReader();
+      reader.onload = () => callback(reader.result);
+      reader.readAsDataURL(file);
+    }
+
+    function updateLeaderboard() {
+      data.sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.win - a.win);
+      const tbody = document.getElementById("leaderboard");
+      tbody.innerHTML = "";
+      data.forEach((bey, i) => {
+        const tr = document.createElement("tr");
+        if (i === 0) tr.classList.add("gold");
+        else if (i === 1) tr.classList.add("silver");
+        else if (i === 2) tr.classList.add("bronze");
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${bey.img ? `<img src="${bey.img}" alt="">` : ""}</td>
+          <td>${bey.name}</td>
+          <td>${bey.win}</td>
+          <td>${bey.lose}</td>
+          <td>${bey.gold}</td>
+          <td>${bey.silver}</td>
+          <td>${bey.bronze}</td>
+          <td><button onclick="openEditModal(${i})">Edit</button></td>
+          <td><button onclick="deleteBey(${i})">Hapus</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openAddModal() {
+      document.getElementById("addModal").style.display = "block";
+    }
+    function closeAddModal() {
+      document.getElementById("addModal").style.display = "none";
+    }
+    function saveNew() {
+      const file = document.getElementById("newImg").files[0];
+      if (file) {
+        toBase64(file, base64 => {
+          const newData = {
+            name: document.getElementById("newName").value.trim(),
+            img: base64,
+            win: parseInt(document.getElementById("newWin").value),
+            lose: parseInt(document.getElementById("newLose").value),
+            gold: parseInt(document.getElementById("newGold").value),
+            silver: parseInt(document.getElementById("newSilver").value),
+            bronze: parseInt(document.getElementById("newBronze").value),
+          };
+          data.push(newData);
+          updateLeaderboard();
+          saveToLocal();
+          closeAddModal();
+        });
+      }
+    }
+
+    function openEditModal(index) {
+      editingIndex = index;
+      document.getElementById("editName").value = data[index].name;
+      document.getElementById("editWin").value = data[index].win;
+      document.getElementById("editLose").value = data[index].lose;
+      document.getElementById("editGold").value = data[index].gold;
+      document.getElementById("editSilver").value = data[index].silver;
+      document.getElementById("editBronze").value = data[index].bronze;
+      document.getElementById("editModal").style.display = "block";
+    }
+    function closeEditModal() {
+      document.getElementById("editModal").style.display = "none";
+    }
+    function saveEdit() {
+      const file = document.getElementById("editImg").files[0];
+      const update = () => {
+        data[editingIndex].name = document.getElementById("editName").value.trim();
+        data[editingIndex].win = parseInt(document.getElementById("editWin").value);
+        data[editingIndex].lose = parseInt(document.getElementById("editLose").value);
+        data[editingIndex].gold = parseInt(document.getElementById("editGold").value);
+        data[editingIndex].silver = parseInt(document.getElementById("editSilver").value);
+        data[editingIndex].bronze = parseInt(document.getElementById("editBronze").value);
+        updateLeaderboard();
+        saveToLocal();
+        closeEditModal();
+      };
+      if (file) {
+        toBase64(file, base64 => {
+          data[editingIndex].img = base64;
+          update();
+        });
+      } else update();
+    }
+
+    function deleteBey(index) {
+      if (confirm("Yakin ingin menghapus Beyblade ini?")) {
+        data.splice(index, 1);
+        updateLeaderboard();
+        saveToLocal();
+      }
+    }
+    function resetData() {
+      if (confirm("Reset semua data ke default?")) {
+        localStorage.removeItem("beybladeData");
+        location.reload();
+      }
+    }
+    function saveToLocal() {
+      localStorage.setItem("beybladeData", JSON.stringify(data));
+    }
+
+    updateLeaderboard();
+  </script>
+</body>
+</html>
