@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Leaderboard Beyblade Burst S1</title>
+  <title>Leaderboard Beyblade Burst</title>
   <link href="https://fonts.googleapis.com/css2?family=Libertinus+Mono&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       font-family: 'Libertinus Mono', monospace;
       background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
@@ -115,19 +113,13 @@
       margin-left: 10px;
     }
     @media (max-width: 768px) {
-      th, td {
-        padding: 8px;
-        font-size: 13px;
-      }
-      img {
-        width: 60px;
-        height: 60px;
-      }
+      th, td { padding: 8px; font-size: 13px; }
+      img { width: 60px; height: 60px; }
     }
   </style>
 </head>
 <body>
-  <h1>🏆 Leaderboard Beyblade Burst S1</h1>
+  <h1>🏆 Leaderboard Beyblade Burst</h1>
   <div class="controls">
     <button onclick="openAddModal()">Tambah Beyblade</button>
     <button onclick="resetData()">Reset</button>
@@ -149,6 +141,7 @@
     </thead>
     <tbody id="leaderboard"></tbody>
   </table>
+
   <div class="modal" id="addModal">
     <h3>Tambah Beyblade</h3>
     <label>Nama: <input type="text" id="newName"></label>
@@ -177,10 +170,20 @@
 
   <script>
     const defaultData = [
-      { name: "Raid Longinus", win: 0, lose: 0, gold: 0, silver: 0, bronze: 0, img: "" },
-      { name: "Zwei Longinus", win: 0, lose: 0, gold: 0, silver: 0, bronze: 0, img: "" },
-      { name: "Hazard Kerbeus", win: 0, lose: 0, gold: 0, silver: 0, bronze: 0, img: "" },
+      { name: "Raid Longinus", win: 4, lose: 0, gold: 1, silver: 0, bronze: 0, img: "" },
+      { name: "Zwei Longinus", win: 3, lose: 1, gold: 0, silver: 1, bronze: 0, img: "" },
+      { name: "Ace Dragon", win: 1, lose: 1, gold: 0, silver: 0, bronze: 1, img: "" },
+      { name: "Hazard Kerbeus", win: 2, lose: 1, gold: 0, silver: 0, bronze: 0, img: "" },
+      { name: "King Helios", win: 2, lose: 1, gold: 0, silver: 0, bronze: 0, img: "" },
+      { name: "Nightmare Longinus", win: 1, lose: 1, gold: 0, silver: 0, bronze: 0, img: "" },
+      { name: "Lord Spriggan", win: 0, lose: 1, gold: 0, silver: 0, bronze: 0, img: "" },
+      { name: "Lost Longinus", win: 0, lose: 1, gold: 0, silver: 0, bronze: 0, img: "" },
+      { name: "Bushin Ashura", win: 0, lose: 1, gold: 0, silver: 0, bronze: 0, img: "" },
+      { name: "Zwei Bahamut", win: 0, lose: 1, gold: 0, silver: 0, bronze: 0, img: "" },
+      { name: "Geist Fafnir", win: 0, lose: 1, gold: 0, silver: 0, bronze: 0, img: "" },
+      { name: "Black Longinus", win: 0, lose: 1, gold: 0, silver: 0, bronze: 0, img: "" }
     ];
+
     let data = JSON.parse(localStorage.getItem("beybladeData")) || defaultData;
     let editingIndex = null;
 
@@ -215,12 +218,9 @@
       });
     }
 
-    function openAddModal() {
-      document.getElementById("addModal").style.display = "block";
-    }
-    function closeAddModal() {
-      document.getElementById("addModal").style.display = "none";
-    }
+    function openAddModal() { document.getElementById("addModal").style.display = "block"; }
+    function closeAddModal() { document.getElementById("addModal").style.display = "none"; }
+
     function saveNew() {
       const file = document.getElementById("newImg").files[0];
       if (file) {
@@ -252,9 +252,11 @@
       document.getElementById("editBronze").value = data[index].bronze;
       document.getElementById("editModal").style.display = "block";
     }
+
     function closeEditModal() {
       document.getElementById("editModal").style.display = "none";
     }
+
     function saveEdit() {
       const file = document.getElementById("editImg").files[0];
       const update = () => {
@@ -283,12 +285,14 @@
         saveToLocal();
       }
     }
+
     function resetData() {
       if (confirm("Reset semua data ke default?")) {
         localStorage.removeItem("beybladeData");
         location.reload();
       }
     }
+
     function saveToLocal() {
       localStorage.setItem("beybladeData", JSON.stringify(data));
     }
